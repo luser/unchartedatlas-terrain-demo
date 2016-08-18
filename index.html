@@ -98,8 +98,8 @@
         // when downloaded.
         map.node().insertAdjacentElement('afterbegin', document.getElementById('map_style').cloneNode(true));
         try {
-          let b = new Blob([String.fromCharCode(0xFEFF), map.node().outerHTML], {type:"application/svg+xml"});
-          let a = document.getElementById("download");
+          var b = new Blob([String.fromCharCode(0xFEFF), map.node().outerHTML], {type:"application/svg+xml"});
+          var a = document.getElementById("download");
           if (a.href) {
             try {
               window.URL.revokeObjectURL(a.href);
