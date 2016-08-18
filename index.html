@@ -1,0 +1,116 @@
+<!--
+  Any copyright is dedicated to the Public Domain.
+  http://creativecommons.org/publicdomain/zero/1.0/
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>unchartedatlas terrain generator example</title>
+    <script src="d3.v4.min.js"></script>
+    <script src="priority-queue.min.js"></script>
+    <script src="naming-language/language.js"></script>
+    <script src="terrain/terrain.js"></script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      body > div {
+        flex: auto;
+        align-self: stretch;
+      }
+    </style>
+    <style id="map_style">
+      path, line {
+        fill: none;
+        stroke: black;
+        stroke-linecap: round;
+      }
+
+      .field {
+        stroke: none;
+        fill-opacity: 1.0;
+      }
+
+      .slope {
+        stroke-width: 1;
+      }
+
+      .river {
+        stroke-width: 2;
+      }
+
+      .coast {
+        stroke-width: 4;
+      }
+
+      .border {
+        stroke-width: 5;
+        stroke-dasharray: 4,4;
+        stroke-linecap: butt;
+      }
+
+      text {
+        font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+        color: black;
+        stroke: white;
+        stroke-width: 5;
+        stroke-linejoin: round;
+        paint-order: stroke;
+      }
+
+      text.region {
+        stroke-width:10;
+        font-variant: small-caps;
+      }
+
+      svg {
+        background-color: white;
+      }
+    </style>
+    <script>
+      function create() {
+        var map = d3.select("#map");
+        var c = document.getElementById("container");
+        // Could calculate the right ratio here...
+        var size = Math.min(c.clientWidth, c.clientHeight);
+        map.attr('width',  size);
+        map.attr('height', size);
+        doMap(map, defaultParams);
+        // Stick the map CSS into the SVG element so it renders nicely
+        // when downloaded.
+        map.node().insertAdjacentElement('afterbegin', document.getElementById('map_style').cloneNode(true));
+        try {
+          let b = new Blob([String.fromCharCode(0xFEFF), map.node().outerHTML], {type:"application/svg+xml"});
+          let a = document.getElementById("download");
+          if (a.href) {
+            try {
+              window.URL.revokeObjectURL(a.href);
+            } catch(e) {}
+          }
+          a.href = window.URL.createObjectURL(b);
+          a.style.display = "";
+        } catch(e) {}
+      }
+      addEventListener('DOMContentLoaded', create);
+    </script>
+  </head>
+  <body>
+    <span>
+      <button onclick="create()">Create a new map</button>
+      <a id="download" download="map.svg" href="" style="display: none">Download this map</a>
+      <p>A live demo of Martin O'Leary's <a href="https://github.com/mewo2/terrain">map generator</a>, which powers <a href="https://twitter.com/unchartedatlas">@unchartedatlas</a>.
+      </p>
+    </span>
+    <div id="container"><svg xmlns="http://www.w3.org/2000/svg" id="map"></svg></div>
+  </body>
+</html>

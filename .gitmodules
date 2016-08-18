@@ -1,0 +1,6 @@
+[submodule "terrain"]
+	path = terrain
+	url = https://github.com/mewo2/terrain.git
+[submodule "naming-language"]
+	path = naming-language
+	url = https://github.com/mewo2/naming-language.git
