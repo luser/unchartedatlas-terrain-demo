@@ -11,6 +11,7 @@
     <script src="priority-queue.min.js"></script>
     <script src="naming-language/language.js"></script>
     <script src="terrain/terrain.js"></script>
+    <script src="seedrandom.min.js"></script>
     <style>
       html, body {
         width: 100%;
@@ -78,7 +79,14 @@
       }
     </style>
     <script>
-      function create() {
+      function create(force) {
+        if (window.location.search && !force) {
+          Math.seedrandom(decodeURIComponent(window.location.search.substr(1)));
+        } else {
+          var s = Math.random().toString(36).substr(2);
+          Math.seedrandom(s);
+          history.pushState("", "", "?" + encodeURIComponent(s));
+        }
         var map = d3.select("#map");
         var c = document.getElementById("container");
         // Could calculate the right ratio here...
@@ -101,12 +109,13 @@
           a.style.display = "";
         } catch(e) {}
       }
-      addEventListener('DOMContentLoaded', create);
+      addEventListener('DOMContentLoaded', function() { create(false); });
+      addEventListener('popstate', function() { create(false); });
     </script>
   </head>
   <body>
     <span>
-      <button onclick="create()">Create a new map</button>
+      <button onclick="create(true)">Create a new map</button>
       <a id="download" download="map.svg" href="" style="display: none">Download this map</a>
       <p>A live demo of Martin O'Leary's <a href="https://github.com/mewo2/terrain">map generator</a>, which powers <a href="https://twitter.com/unchartedatlas">@unchartedatlas</a>. <a href="https://github.com/luser/unchartedatlas-terrain-demo/">GitHub repo for this page.</a>.
       </p>
